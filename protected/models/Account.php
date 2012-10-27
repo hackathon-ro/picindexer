@@ -40,7 +40,7 @@ class Account extends CActiveRecord
 			array('user_id, type, access_token', 'required'),
 			array('user_id', 'numerical', 'integerOnly'=>true),
 			array('type', 'length', 'max'=>16),
-			array('access_token', 'length', 'max'=>64),
+			array('access_token', 'length', 'max'=>256),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
 			array('id, user_id, type, access_token', 'safe', 'on'=>'search'),
@@ -91,5 +91,30 @@ class Account extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+	
+	public function getName() {
+		if($this->isNewRecord) {
+			Yii::log('Trying to get name of new record', 'warning');
+			return '';
+		}
+		
+		$fb = Yii::app()->facebook;
+		$fb->setAccessToken($this->access_token);
+		
+		$user = $fb->api('/me');
+		Yii::trace(CVarDumper::dumpAsString($user));
+		
+		return $user['name'];
+	}
+	
+	public function getEditUrl() {
+		// TODO: URL destination page doesn't exist yet
+		return Yii::app()->createUrl('/app/default/editAccount', array('id'=>$this->id));
+	}
+	
+	public function getTypeIcon() {
+		// TODO: create AccountHelper which generates this
+		return $this->type;
 	}
 }
