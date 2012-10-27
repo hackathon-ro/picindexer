@@ -38,6 +38,11 @@ return array(
 			'application.components.*',
 		),
 		
+		// Modules
+		'modules' => array(
+			'app',
+		),
+		
 		// Application components
 		'components' => array(
 		
