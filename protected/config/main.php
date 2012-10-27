@@ -30,7 +30,7 @@ return array(
 		'name' => 'PicIndexer',
 
 		// Preloading 'log' component
-		'preload' => array('log'),
+		'preload' => array('log','bootstrap'),
 
 		// Autoloading model and component classes
 		'import' => array(
@@ -70,6 +70,11 @@ return array(
 			'errorHandler'=>array(
 				// use 'site/error' action to display errors
 				'errorAction'=>'site/error',
+			),
+			
+			// Yii-Bootstrap
+			'bootstrap'=>array(
+				'class'=>'ext.bootstrap.components.Bootstrap', // assuming you extracted bootstrap under extensions
 			),
 
 		),
