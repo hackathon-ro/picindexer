@@ -20,6 +20,11 @@ class AppModule extends CWebModule
 		{
 			// this method is called before any module controller action is performed
 			// you may place customized code here
+			
+			// Verify if user is logged in
+			if(Yii::app()->user->isGuest)
+				throw new CHttpException(403, 'You must log in to use the application');
+			
 			return true;
 		}
 		else
