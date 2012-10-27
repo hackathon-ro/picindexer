@@ -73,29 +73,30 @@ class SiteController extends Controller
 	}
 
 	/**
-	 * Displays the login page
+	 * Logs the user using FB Connect
 	 */
 	public function actionLogin()
 	{
-		$model=new LoginForm;
-
-		// if it is ajax validation request
-		if(isset($_POST['ajax']) && $_POST['ajax']==='login-form')
-		{
-			echo CActiveForm::validate($model);
-			Yii::app()->end();
+		$fb = Yii::app()->facebook;
+		
+		$user = $fb->user;
+		
+		if(!$user) {
+			// Not logged into FB. Either authorization was rejected or no attempt was made
+			if(isset($_REQUEST['error_reason']) && $_REQUEST['error_reason'] == 'user_denied') {
+				// If user denied access, issue a 401
+				throw new CHttpException(401, 'You disapproved the login process. Unable to login with Facebook');
+			} else {
+				// Try to authenticate user
+				$this->redirect($fb->loginUrl);
+			}
+		} else {
+			// User is logged into FB. Log him into our app as well
+			$identity = new UserIdentity($user, '');
+			$identity->authenticate();
+			Yii::app()->user->login($identity);
+			$this->redirect(Yii::app()->user->returnUrl);
 		}
-
-		// collect user input data
-		if(isset($_POST['LoginForm']))
-		{
-			$model->attributes=$_POST['LoginForm'];
-			// validate user input and redirect to the previous page if valid
-			if($model->validate() && $model->login())
-				$this->redirect(Yii::app()->user->returnUrl);
-		}
-		// display the login form
-		$this->render('login',array('model'=>$model));
 	}
 
 	/**
@@ -104,6 +105,8 @@ class SiteController extends Controller
 	public function actionLogout()
 	{
 		Yii::app()->user->logout();
-		$this->redirect(Yii::app()->homeUrl);
+		$this->redirect(Yii::app()->facebook->getLogoutUrl(array(
+			'next' => $this->createAbsoluteUrl(Yii::app()->homeUrl)
+		)));
 	}
 }
