@@ -95,7 +95,7 @@ class SiteController extends Controller
 			$identity = new UserIdentity($user, '');
 			$identity->authenticate();
 			Yii::app()->user->login($identity);
-			$this->redirect(Yii::app()->user->getReturnUrl(Yii::app()->homeUrl));
+			$this->redirect(Yii::app()->user->getReturnUrl(array('/app')));
 		}
 	}
 
