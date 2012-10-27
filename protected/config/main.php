@@ -27,7 +27,7 @@ return array(
 	'configWeb' => array(
 
 		'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-		'name' => 'My Web Application',
+		'name' => 'PicIndexer',
 
 		// Preloading 'log' component
 		'preload' => array('log'),
@@ -91,7 +91,7 @@ return array(
 	'configConsole' => array(
 
 		'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
-		'name' => 'My Console Application',
+		'name' => 'PicIndexer',
 
 		// Preloading 'log' component
 		'preload' => array('log'),
