@@ -86,6 +86,16 @@ class SiteController extends Controller
 			if(isset($_REQUEST['error_reason']) && $_REQUEST['error_reason'] == 'user_denied') {
 				// If user denied access, issue a 401
 				throw new CHttpException(401, 'You disapproved the login process. Unable to login with Facebook');
+			} elseif(isset($_REQUEST['error'])) {
+				$reason = isset($_REQUEST['error_reason']) ? $_REQUEST['error_reason'] : '';
+				$details = isset($_REQUEST['error_description']) ? $_REQUEST['error_description'] : '';
+				
+				throw new ServiceException(
+					'facebook',
+					$_REQUEST['error'],
+					$reason,
+					$description
+				));
 			} else {
 				// Try to authenticate user
 				$this->redirect($fb->loginUrl);
