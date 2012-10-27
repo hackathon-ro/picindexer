@@ -20,6 +20,15 @@ class UserIdentity extends CUserIdentity
 		$fb = Yii::app()->facebook;
 		$this->errorCode=self::ERROR_NONE;
 		
+		$user = User::model()->findByPk($fb->user);
+		if(!$user) {
+			$user = new User;
+			$user->id = $fb->user;
+			if(!$user->save()) {
+				$this->errorCode = self::ERROR_USERNAME_INVALID;
+			}
+		}
+		
 		return !$this->errorCode;
 	}
 }
