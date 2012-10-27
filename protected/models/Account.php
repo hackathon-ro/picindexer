@@ -1,17 +1,20 @@
 <?php
 
 /**
- * This is the model class for table "users".
+ * This is the model class for table "accounts".
  *
- * The followings are the available columns in table 'users':
+ * The followings are the available columns in table 'accounts':
  * @property integer $id
+ * @property integer $user_id
+ * @property string $type
+ * @property string $access_token
  */
-class User extends CActiveRecord
+class Account extends CActiveRecord
 {
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
-	 * @return User the static model class
+	 * @return Account the static model class
 	 */
 	public static function model($className=__CLASS__)
 	{
@@ -23,7 +26,7 @@ class User extends CActiveRecord
 	 */
 	public function tableName()
 	{
-		return 'users';
+		return 'accounts';
 	}
 
 	/**
@@ -34,9 +37,13 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
+			array('user_id, type, access_token', 'required'),
+			array('user_id', 'numerical', 'integerOnly'=>true),
+			array('type', 'length', 'max'=>16),
+			array('access_token', 'length', 'max'=>64),
 			// The following rule is used by search().
 			// Please remove those attributes that should not be searched.
-			array('id', 'safe', 'on'=>'search'),
+			array('id, user_id, type, access_token', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -48,7 +55,7 @@ class User extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'accounts' => array(self::HAS_MANY, 'Account', 'user_id'),
+			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
 		);
 	}
 
@@ -59,6 +66,9 @@ class User extends CActiveRecord
 	{
 		return array(
 			'id' => 'ID',
+			'user_id' => 'User',
+			'type' => 'Type',
+			'access_token' => 'Access Token',
 		);
 	}
 
@@ -74,6 +84,9 @@ class User extends CActiveRecord
 		$criteria=new CDbCriteria;
 
 		$criteria->compare('id',$this->id);
+		$criteria->compare('user_id',$this->user_id);
+		$criteria->compare('type',$this->type,true);
+		$criteria->compare('access_token',$this->access_token,true);
 
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
