@@ -95,7 +95,7 @@ class SiteController extends Controller
 					$_REQUEST['error'],
 					$reason,
 					$description
-				));
+				);
 			} else {
 				// Try to authenticate user
 				$this->redirect($fb->loginUrl);
