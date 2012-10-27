@@ -1,0 +1,3 @@
+[submodule "protected/extensions/yii-facebook-opengraph"]
+	path = protected/extensions/yii-facebook-opengraph
+	url = git://github.com/splashlab/yii-facebook-opengraph.git
