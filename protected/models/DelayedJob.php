@@ -81,6 +81,12 @@ class DelayedJob extends CActiveRecord
 			'account' => array(self::BELONGS_TO, 'Account', 'account_id'),
 		);
 	}
+	
+	public function scopes() {
+		return array(
+			'new' => array('condition'=>'status="new"'),
+		);
+	}
 
 	/**
 	 * @return array customized attribute labels (name=>label)
