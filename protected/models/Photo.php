@@ -104,4 +104,10 @@ class Photo extends CActiveRecord
 	public function requestDescription() {
 		// TODO
 	}
+	
+	public function receiveDescription($description) {
+		$this->description = $description;
+		if(!$this->save())
+			Yii::log('Unable to receive description for photo '.$this->id, 'error');
+	}
 }
