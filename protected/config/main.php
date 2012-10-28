@@ -175,6 +175,11 @@ return array(
 					//'image'=>'URL_TO_WEBSITE_LOGO',
 				//),
 			),
+			
+			'session' => array(
+				'class' => 'CDbHttpSession',
+				'sessionTableName' => 'console_sessions',
+			),
 
 		),
 
