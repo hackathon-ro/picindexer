@@ -28,6 +28,7 @@ return array(
 
 		'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
 		'name' => 'PicIndexer',
+		'theme' => 'bootstrap',
 
 		// Preloading 'log' component
 		'preload' => array('log','bootstrap'),
