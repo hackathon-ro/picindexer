@@ -7,7 +7,6 @@ class FacebookAccount extends Account {
 	}
 	
 	public function getName() {
-		Yii::trace('FacebookAccount::getName');
 		if($this->isNewRecord) {
 			Yii::log('Trying to get name of new record', 'warning');
 			return '';
