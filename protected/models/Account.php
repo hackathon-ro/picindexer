@@ -82,6 +82,8 @@ class Account extends CActiveRecord
 		// class name for the relations automatically generated below.
 		return array(
 			'user' => array(self::BELONGS_TO, 'User', 'user_id'),
+			'jobs' => array(self::HAS_ONE, 'DelayedJob', 'account_id'),
+			'photos' => array(self::HAS_MANY, 'Photo', 'account_id'),
 		);
 	}
 
