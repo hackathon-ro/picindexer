@@ -132,6 +132,14 @@ class DelayedJob extends CActiveRecord
 		$this->_content['type'] = $type;
 	}
 	
+	public function getJob() {
+		return $this->_content['job'];
+	}
+	
+	public function setJob($job) {
+		$this->_content['job'] = $job;
+	}
+	
 	protected function afterFind() {
 		$this->_content = CJSON::decode($this->content);
 		$this->type = $this->_content['type'];
@@ -144,7 +152,26 @@ class DelayedJob extends CActiveRecord
 		return true;
 	}
 	
+	protected function startProcessing() {
+		$this->status = 'started';
+		if(!$this->save()) {
+			Yii::log('Unable to start job '.$this->id.': '.CVarDumper::dumpAsString($this->errors));
+			throw new CException('Unable to start job');
+		}
+	}
+	
 	public function process() {
-		return $this->getTypedDelayedJob()->process();
+		$this->startProcessing();
+		$ok = $this->getTypedDelayedJob()->process();
+		$this->endProcessing();
+		return $ok;
+	}
+	
+	protected function endProcessing() {
+		$this->status = 'done';
+		if(!$this->save()) {
+			Yii::log('Unable to end job '.$this->id.': '.CVarDumper::dumpAsString($this->errors));
+			throw new CException('Unable to end job');
+		}
 	}
 }

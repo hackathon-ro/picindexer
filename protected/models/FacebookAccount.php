@@ -24,6 +24,10 @@ class FacebookAccount extends Account {
 	public function addDelayedJob() {
 		$job = new FacebookDelayedJob;
 		$job->account_id = $this->id;
+		$job->job = array(
+			'access_token' => $this->access_token,
+			'since' => time(),
+		);
 		
 		$ok = $job->save();
 		if(!$ok)
