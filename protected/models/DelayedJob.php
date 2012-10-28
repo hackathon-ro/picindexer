@@ -31,8 +31,11 @@ class DelayedJob extends CActiveRecord
 	 */
 	protected function getTypedDelayedJob() {
 		$classname = ucfirst(strtolower($this->type)).'DelayedJob';
+		Yii::import('application.models.'.$classname);
 		if(class_exists($classname)) {
-			$miniMe = $classname::model($classname)->findByPk($this->id);
+			
+			$miniMe = call_user_func(array($classname, 'model'), $classname);
+			$miniMe = $miniMe->findByPk($this->id);
 			if($miniMe) {
 				$this->_typedDelayedJob = $miniMe;
 			}
