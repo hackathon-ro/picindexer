@@ -18,7 +18,7 @@ class FacebookDelayedJob extends DelayedJob {
 				'SELECT object_id FROM notification WHERE recipient_id = me() AND created_time > "%s" AND object_type = "photo"',
 				date('c', strtotime("-2 days"))
 			),
-			'result' => sprintf('SELECT src, object_id FROM photo WHERE object_id IN (SELECT object_id FROM #photonotifications)'),
+			'result' => sprintf('SELECT src, link, object_id FROM photo WHERE object_id IN (SELECT object_id FROM #photonotifications)'),
 		));
 		
 		$photos = $fb->api(array(
@@ -37,6 +37,7 @@ class FacebookDelayedJob extends DelayedJob {
 		foreach($photos as $p) {
 			$localphoto = new FacebookPhoto;
 			$localphoto->url = $p['src'];
+			$localphoto->remote_url = $p['link'];
 			$localphoto->remote_id = $p['object_id'];
 			$localphoto->job_id = $this->id;
 			$localphoto->account_id = $this->account_id;
