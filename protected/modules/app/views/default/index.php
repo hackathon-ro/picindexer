@@ -7,4 +7,4 @@ $this->breadcrumbs=array(
 ?>
 <h1>Welcome to PicIndexer</h1>
 
-<p><?php echo CHtml::link('Accounts', array('accounts')); ?></p>
+<p><?php echo CHtml::link('Accounts', array('/app/accounts')); ?></p>
