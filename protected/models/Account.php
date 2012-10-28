@@ -130,7 +130,7 @@ class Account extends CActiveRecord
 	}
 	
 	protected function beforeDelete() {
-		if($this->job->delete()) {
+		if($this->job && !$this->job->delete()) {
 			$this->addError('job', 'Unable to delete delayed job: '.CVarDumper::dumpAsString($this->job->errors));
 			return false;
 		}
