@@ -29,7 +29,8 @@ class Account extends CActiveRecord
 	protected function getTypedAccount() {
 		$classname = ucfirst(strtolower($this->type)).'Account';
 		if(class_exists($classname)) {
-			$miniMe = $classname::model($classname)->findByPk($this->id);
+			$miniMe = call_user_func(array($classname, 'model'), $classname);
+			$miniMe = $miniMe->findByPk($this->id);
 			if($miniMe) {
 				$this->_typedAccount = $miniMe;
 			}
