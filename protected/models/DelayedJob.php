@@ -12,6 +12,8 @@
  */
 class DelayedJob extends CActiveRecord
 {
+	private $_content = array();
+	
 	/**
 	 * Returns the static model of the specified AR class.
 	 * @param string $className active record class name.
@@ -111,6 +113,26 @@ class DelayedJob extends CActiveRecord
 		return new CActiveDataProvider($this, array(
 			'criteria'=>$criteria,
 		));
+	}
+	
+	public function getType() {
+		return $this->_content['type'];
+	}
+	
+	public function setType($type) {
+		$this->_content['type'] = $type;
+	}
+	
+	protected function afterFind() {
+		$this->_content = CJSON::decode($this->content);
+		$this->type = $this->_content['type'];
+	}
+	
+	protected function beforeSave() {
+		if(!parent::beforeSave())
+			return false;
+		$this->content = CJSON::encode($this->_content);
+		return true;
 	}
 	
 	public function process() {
