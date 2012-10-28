@@ -55,6 +55,7 @@ return array(
 			'urlManager'=>array(
 				'urlFormat'=>'path',
 				'rules'=>array(
+					'/'=>'site/index',
 					'<controller:\w+>s'=>'<controller>/index',
 					'<module:\w+>/<controller:\w+>s'=>'<module>/<controller>/index',
 					'<controller:\w+>/<id:\d+>'=>'<controller>/view',
