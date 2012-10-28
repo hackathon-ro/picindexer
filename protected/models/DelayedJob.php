@@ -160,24 +160,27 @@ class DelayedJob extends CActiveRecord
 	}
 	
 	public function lockExpired() {
-		return $this->status == 'started' && (($this->locked_at + $this->process_period) > time());
+		return (strtotime($this->locked_at) + $this->process_period) < time();
 	}
 	
 	protected function startProcessing() {
-		if($this->status != 'new' || !$this->lockExpired())
+		if(!$this->status)
+			$this->status='new';
+		if($this->status != 'new' && ($this->status != 'started' || !$this->lockExpired()))
 			return false;
 		$this->status = 'started';
-		$this->locked_at = time();
+		$this->locked_at = new CDbExpression('NOW()');
 		$this->process_period = $this->_process_period;
 		if(!$this->save()) {
 			Yii::log('Unable to start job '.$this->id.': '.CVarDumper::dumpAsString($this->errors));
 			return false;
 		}
+		return true;
 	}
 	
 	public function process() {
 		if(!$this->startProcessing())
-			return false;;
+			return false;
 		$ok = $this->getTypedDelayedJob()->process();
 		$this->endProcessing();
 		return $ok;

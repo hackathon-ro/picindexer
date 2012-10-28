@@ -47,5 +47,7 @@ class FacebookDelayedJob extends DelayedJob {
 				$localphoto->requestDescription();
 			}
 		}
+		
+		return true;
 	}
 }
