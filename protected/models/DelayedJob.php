@@ -88,6 +88,7 @@ class DelayedJob extends CActiveRecord
 	public function scopes() {
 		return array(
 			'new' => array('condition'=>'status="new"'),
+			'notDone' => array('condition'=>'status <> "done"'),
 		);
 	}
 
