@@ -20,6 +20,18 @@ class Account extends CActiveRecord
 	{
 		return parent::model($className);
 	}
+	
+	public function __call($name, $args=array()) {
+		$classname = ucfirst(strtolower($this->type)).'Account';
+		if(class_exists($classname)) {
+			$miniMe = $classname::model($classname)->findByPk($this->id);
+			if(is_callable(array($miniMe, $name))) {
+				return call_user_func_array(array($miniMe, $name), $args);
+			}
+		}
+		
+		return parent::__call($name, $args);
+	}
 
 	/**
 	 * @return string the associated database table name
@@ -94,18 +106,7 @@ class Account extends CActiveRecord
 	}
 	
 	public function getName() {
-		if($this->isNewRecord) {
-			Yii::log('Trying to get name of new record', 'warning');
-			return '';
-		}
-		
-		$fb = Yii::app()->facebook;
-		$fb->setAccessToken($this->access_token);
-		
-		$user = $fb->api('/me');
-		Yii::trace(CVarDumper::dumpAsString($user));
-		
-		return $user['name'];
+		return $this->__call('getName', array());
 	}
 	
 	public function getEditUrl() {
