@@ -81,7 +81,7 @@ class AccountController extends Controller
 			
 			// No errors, no code, no token. Go out and get it
 			$this->redirect($fb->getLoginUrl(array(
-				'scope' => array('user_photos', 'friends_photos'),
+				'scope' => array('user_photos', 'friends_photos, manage_notifications'),
 				'redirect_uri' => $this->createAbsoluteUrl('add', array('type'=>'facebook')),
 			)));
 		}
