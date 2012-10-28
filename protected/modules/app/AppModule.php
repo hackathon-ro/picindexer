@@ -13,6 +13,10 @@ class AppModule extends CWebModule
 			'app.components.*',
 		));
 	}
+	
+	public function getName() {
+		return 'Application';
+	}
 
 	public function beforeControllerAction($controller, $action)
 	{
