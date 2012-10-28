@@ -40,7 +40,7 @@ class Photo extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('type, remote_id, url, description, account_id, job_id', 'required'),
+			array('type, remote_id, url, account_id, job_id', 'required'),
 			array('remote_id, account_id, job_id', 'numerical', 'integerOnly'=>true),
 			array('type', 'length', 'max'=>32),
 			array('url', 'length', 'max'=>1024),
