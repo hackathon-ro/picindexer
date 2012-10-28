@@ -100,4 +100,8 @@ class Photo extends CActiveRecord
 			'criteria'=>$criteria,
 		));
 	}
+	
+	public function requestDescription() {
+		// TODO
+	}
 }
