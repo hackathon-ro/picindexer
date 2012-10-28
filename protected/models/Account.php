@@ -121,6 +121,22 @@ class Account extends CActiveRecord
 		));
 	}
 	
+	protected function afterSave() {
+		parent::afterSave();
+		
+		if(!$this->addDelayedJob()) {
+			Yii::log('error', 'Unable to add delayed job for account '.$this->id);
+		}
+	}
+	
+	protected function beforeDelete() {
+		if($this->job->delete()) {
+			$this->addError('job', 'Unable to delete delayed job: '.CVarDumper::dumpAsString($this->job->errors));
+			return false;
+		}
+		return parent::beforeDelete();
+	}
+	
 	public function getName() {
 		return $this->__call('getName', array());
 	}
@@ -133,5 +149,9 @@ class Account extends CActiveRecord
 	public function getTypeIcon() {
 		// TODO: create AccountHelper which generates this
 		return $this->type;
+	}
+	
+	public function addDelayedJob() {
+		return $this->getTypedAccount()->addDelayedJob();
 	}
 }

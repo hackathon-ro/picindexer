@@ -20,4 +20,14 @@ class FacebookAccount extends Account {
 		
 		return $user['name'];
 	}
+	
+	public function addDelayedJob() {
+		$job = new FacebookDelayedJob;
+		$job->account_id = $this->id;
+		
+		$ok = $job->save();
+		if(!$ok)
+			Yii::app()->user->setFlash('error', 'Unable to add job for account. Details: '.CVarDumper::dumpAsString($job->errors));
+		return $ok;
+	}
 }
