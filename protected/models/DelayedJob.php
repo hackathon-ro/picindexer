@@ -1,0 +1,119 @@
+<?php
+
+/**
+ * This is the model class for table "delayed_jobs".
+ *
+ * The followings are the available columns in table 'delayed_jobs':
+ * @property integer $id
+ * @property integer $account_id
+ * @property string $type
+ * @property string $content
+ * @property string $status
+ */
+class DelayedJob extends CActiveRecord
+{
+	/**
+	 * Returns the static model of the specified AR class.
+	 * @param string $className active record class name.
+	 * @return DelayedJob the static model class
+	 */
+	public static function model($className=__CLASS__)
+	{
+		return parent::model($className);
+	}
+	
+	private $_typedDelayedJob = null;
+	/**
+	 * Returns a typed instance of this AR.
+	 * E.g. if type == 'facebook', it returns a FacebookDelayedJob
+	 */
+	protected function getTypedDelayedJob() {
+		$classname = ucfirst(strtolower($this->type)).'DelayedJob';
+		if(class_exists($classname)) {
+			$miniMe = $classname::model($classname)->findByPk($this->id);
+			if($miniMe) {
+				$this->_typedDelayedJob = $miniMe;
+			}
+		}
+		
+		return $this->_typedDelayedJob;
+	}
+
+	/**
+	 * @return string the associated database table name
+	 */
+	public function tableName()
+	{
+		return 'delayed_jobs';
+	}
+
+	/**
+	 * @return array validation rules for model attributes.
+	 */
+	public function rules()
+	{
+		// NOTE: you should only define rules for those attributes that
+		// will receive user inputs.
+		return array(
+			array('account_id, type', 'required'),
+			array('account_id', 'numerical', 'integerOnly'=>true),
+			array('type', 'length', 'max'=>16),
+			array('status', 'length', 'max'=>7),
+			// The following rule is used by search().
+			// Please remove those attributes that should not be searched.
+			array('id, account_id, type, content, status', 'safe', 'on'=>'search'),
+		);
+	}
+
+	/**
+	 * @return array relational rules.
+	 */
+	public function relations()
+	{
+		// NOTE: you may need to adjust the relation name and the related
+		// class name for the relations automatically generated below.
+		return array(
+			'account' => array(self::BELONGS_TO, 'Account', 'account_id'),
+		);
+	}
+
+	/**
+	 * @return array customized attribute labels (name=>label)
+	 */
+	public function attributeLabels()
+	{
+		return array(
+			'id' => 'ID',
+			'account_id' => 'Account',
+			'type' => 'Type',
+			'content' => 'Content',
+			'status' => 'Status',
+		);
+	}
+
+	/**
+	 * Retrieves a list of models based on the current search/filter conditions.
+	 * @return CActiveDataProvider the data provider that can return the models based on the search/filter conditions.
+	 */
+	public function search()
+	{
+		// Warning: Please modify the following code to remove attributes that
+		// should not be searched.
+
+		$criteria=new CDbCriteria;
+
+		$criteria->compare('id',$this->id);
+		$criteria->compare('account_id',$this->account_id);
+		$criteria->compare('type',$this->type,true);
+		$criteria->compare('content',$this->content,true);
+		$criteria->compare('status',$this->status,true);
+
+		return new CActiveDataProvider($this, array(
+			'criteria'=>$criteria,
+		));
+	}
+	
+	public function process() {
+		return $this->getTypedDelayedJob()->process();
+	}
+}
