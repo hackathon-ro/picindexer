@@ -21,13 +21,27 @@ class Account extends CActiveRecord
 		return parent::model($className);
 	}
 	
-	public function __call($name, $args=array()) {
+	private $_typedAccount = null;
+	/**
+	 * Returns a typed instance of this AR.
+	 * E.g. if type == 'facebook', it returns a FacebookAccount
+	 */
+	protected function getTypedAccount() {
 		$classname = ucfirst(strtolower($this->type)).'Account';
 		if(class_exists($classname)) {
 			$miniMe = $classname::model($classname)->findByPk($this->id);
-			if(is_callable(array($miniMe, $name))) {
-				return call_user_func_array(array($miniMe, $name), $args);
+			if($miniMe) {
+				$this->_typedAccount = $miniMe;
 			}
+		}
+		
+		return $this->_typedAccount;
+	}
+	
+	public function __call($name, $args=array()) {
+		$miniMe = $this->getTypedAccount();
+		if($miniMe && is_callable(array($miniMe, $name))) {
+			return call_user_func_array(array($miniMe, $name), $args);
 		}
 		
 		return parent::__call($name, $args);
