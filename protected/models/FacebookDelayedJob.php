@@ -1,6 +1,9 @@
 <?php 
 
 class FacebookDelayedJob extends DelayedJob {
+	
+	protected $_process_period = 30; // 30 seconds to complete
+	
 	protected function beforeValidate() {
 		$this->type = 'facebook';
 		return parent::beforeValidate();
