@@ -63,7 +63,7 @@ class DelayedJob extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('account_id, type, locked_at, process_period', 'required'),
+			array('account_id, type, process_period', 'required'),
 			array('account_id, process_period', 'numerical', 'integerOnly'=>true),
 			array('type', 'length', 'max'=>16),
 			array('status', 'length', 'max'=>7),
@@ -151,6 +151,14 @@ class DelayedJob extends CActiveRecord
 	protected function afterFind() {
 		$this->_content = CJSON::decode($this->content);
 		$this->type = $this->_content['type'];
+	}
+	
+	protected function beforeValidate() {
+		if(!parent::beforeSave())
+			return false;
+		if(!$this->process_period)
+			$this->process_period = $this->_process_period;
+		return true;
 	}
 	
 	protected function beforeSave() {
